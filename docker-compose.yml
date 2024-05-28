@@ -1,0 +1,36 @@
+version: '3'
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: php:8.1-fpm
+        container_name: songwishesfordj_app
+        restart: unless-stopped
+        tty: true
+        environment:
+            SERVICE_NAME: app
+            SERVICE_TAGS: dev
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+            - ./storage:/var/www/storage
+        networks:
+            - songwishesfordj
+
+    nginx:
+        image: nginx:stable-alpine
+        container_name: songwishesfordj_nginx
+        restart: unless-stopped
+        tty: true
+        ports:
+            - '8000:80'
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+        networks:
+            - songwishesfordj
+
+networks:
+    songwishesfordj:
+        driver: bridge
