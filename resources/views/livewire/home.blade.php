@@ -15,10 +15,10 @@
     @endif
 
     <div class="mt-12 flex justify-center items-center">
-        <i class="icon-disc-3 disc-animation xl:text-9xl lg:text-5xl text-3xl text-center"></i>
+        <i class="icon-disc-3 disc-animation xl:text-9xl text-5xl text-center"></i>
     </div>
     <div class="flex justify-center items-center">
-        <h1 class="linear-wipe h-24 text-center xl:text-7xl lg:text-5xl text-3xl font-bold"> {{ config('app.name') }}</h1>
+        <h1 class="linear-wipe h-24 text-center xl:text-7xl lg:text-5xl text-5xl font-bold"> {{ config('app.name') }}</h1>
     </div>
     <x-form class="md:flex justify-center block items-center lg:mt-12 mt-0 w-full" wire:submit="search">
         <label class="input input-bordered flex items-center md:w-1/2 w-full">

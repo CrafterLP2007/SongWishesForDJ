@@ -4,7 +4,7 @@
             <img src="{{ asset('img/Logo.svg') }}" class="w-12 h-12" alt="Logo">
             <a class="sm:visible invisible btn btn-ghost text-xl">{{ config('app.name') }}</a>
         </div>
-        <div class="sm:navbar-end navbar-center md:mr-12 mr-0">
+        <div class="sm:navbar-end flex md:mr-12 mr-0">
             <div class="flex items-center space-x-1">
                 <i class="icon-disc-3"></i>
                 <p>{!! __('pages/navbar.playlist_track_count', ['count' => spotify()->getAmountOfTracksInPlaylist()]) !!}</p>
