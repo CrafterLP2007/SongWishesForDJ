@@ -7,7 +7,6 @@ use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Exception;
 use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\App;
 use Livewire\Component;
 
 class Home extends Component
@@ -20,7 +19,7 @@ class Home extends Component
 
     public function addSong($trackUri): void
     {
-        if ($this->rateLimitTime) {
+        if ($this->setRateLimit()) {
             return;
         }
 
@@ -49,14 +48,16 @@ class Home extends Component
                 ->send();
         }
 
-        $this->setRateLimit();
-
         $this->redirect(route('home'), true);
     }
 
     public function search(): void
     {
         if (empty($this->searchTerm)) {
+            return;
+        }
+
+        if ($this->setRateLimit()) {
             return;
         }
 
