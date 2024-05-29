@@ -3,6 +3,13 @@
     <p>A simple song wishes system for spotify in Laravel</p>
 </div>
 
+## 🔎 Requirements
+To run this project, you need to have the following requirements:
+- [PHP](https://www.php.net/downloads.php) >= 8.1
+- [Composer](https://getcomposer.org/download/) >= 2.5.7
+- [Node.js](https://nodejs.org/en/download/package-manager) >= 20.7.0
+- [NPM](https://nodejs.org/en/download/package-manager) >= 10.1.0
+
 ## 📦 Installation
 To install this project, you need to follow these steps:
 
@@ -17,8 +24,6 @@ cp .env.example .env
 ```
 
 3. Install the composer dependencies:
-> [!IMPORTANT]  
-> If you don't have composer installed, you can download it [here](https://getcomposer.org/download/).
 ```bash
 composer install --no-dev --optimize-autoloader
 ```
@@ -29,8 +34,6 @@ php artisan key:generate
 ```
 
 5. Install the npm dependencies:
-> [!IMPORTANT]
-> If you don't have npm installed, you can download it [here](https://nodejs.org/en/download/).
 ```bash
 npm install
 ```
