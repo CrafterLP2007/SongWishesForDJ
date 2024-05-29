@@ -3,7 +3,7 @@ services:
     app:
         build:
             context: .
-            dockerfile: Dockerfile
+            dockerfile: ./docker/Dockerfile
         image: php:8.1-fpm
         container_name: songwishesfordj_app
         restart: unless-stopped
