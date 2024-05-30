@@ -53,6 +53,7 @@ npm run build
 SPOTIFY_CLIENT_ID=
 SPOTIFY_CLIENT_SECRET=
 SPOTIFY_REDIRECT_URI=
+SPOTIFY_PLAYLIST_ID=
 ```
 4. To authorize your user with your client details, you need to execute the following command:
 ```bash
@@ -67,9 +68,6 @@ If you have any problems with the installation, you can try the following steps 
 
 - **Song limit exceeded**
   If you get an error that the song limit is exceeded, you should check if the playlist is full or go into the **.env** file and change the following variable:
-    ```dotenv
-    SPOTIFY_PLAYLIST_LIMIT=VALUE_YOU_WANT
-    ```
   
 ## 🏳️ Multi-Language
 This project is available in multiple languages. You can change the language in the **.env** file:
