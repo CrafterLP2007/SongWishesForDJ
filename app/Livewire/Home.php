@@ -39,6 +39,7 @@ class Home extends Component
             Notification::make()
                 ->success()
                 ->title(__('messages.notifications.track_added.title'))
+                ->body(__('messages.notifications.track_added.body'))
                 ->send();
         } catch (Exception) {
             Notification::make()
