@@ -53,10 +53,10 @@
                         @endforeach
                     </div>
                 </div>
-                <button wire:click="addSong('{{ $song['uri']}}')" class="btn btn-primary mt-4 mb-4 mx-4">
+                <x-button wire:click="addSong('{{ $song['uri']}}')" class="btn btn-primary mt-4 mb-4 mx-4" spinner="addSong('{{ $song['uri']}}')">
                     <i class="icon-plus"></i>
                     {!! __('pages/home.cards.add_button_label') !!}
-                </button>
+                </x-button>
             </div>
         @endforeach
     </div>

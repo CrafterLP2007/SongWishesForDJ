@@ -17,6 +17,7 @@ class SpotifyService
 {
     public string $playlistId;
     private Session $session;
+    private SpotifyWebAPI $api;
 
     /**
      * SpotifyService constructor.
@@ -30,6 +31,8 @@ class SpotifyService
             config('spotify.auth.client_secret'),
             config('spotify.callback.redirect_uri')
         );
+
+        $this->api = new SpotifyWebAPI();
     }
 
     /**
@@ -116,13 +119,28 @@ class SpotifyService
      */
     private function isAlreadyInPlaylist(string $trackUri): bool
     {
-        foreach (SpotifyFacade::playlist($this->playlistId)->fields('tracks')->get() as $playlist) {
-            foreach ($playlist['items'] as $item) {
-                if ($item['track']['uri'] === $trackUri) {
+        $api = new SpotifyWebAPI();
+        $api->setAccessToken($this->getAccessToken());
+
+        $offset = 0;
+        $limit = 100;
+
+        do {
+            $tracks = $api->getPlaylistTracks($this->playlistId, [
+                'offset' => $offset,
+                'limit' => $limit,
+                'fields' => 'items(track(uri))'
+            ]);
+
+            foreach ($tracks->items as $item) {
+                if ($item->track->uri === $trackUri) {
                     return true;
                 }
             }
-        }
+
+            $offset += $limit;
+        } while (count($tracks->items) === $limit);
+
         return false;
     }
 
@@ -161,7 +179,6 @@ class SpotifyService
     public function getAmountOfTracksInPlaylist(): int
     {
         $size = 0;
-
         foreach (SpotifyFacade::playlist($this->playlistId)->fields('tracks')->get() as $playlist) {
             foreach ($playlist['items'] as $item) {
                 unset($item);

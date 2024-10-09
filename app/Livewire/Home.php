@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
+use Aerni\Spotify\Facades\SpotifyFacade;
 use App\Facades\SpotifyManager;
+use App\Jobs\AddSong;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Exception;
@@ -34,6 +36,7 @@ class Home extends Component
                 $this->redirect(route('home'), true);
                 return;
             }
+
             SpotifyManager::addTrackToPlaylist($trackUri);
 
             Notification::make()
