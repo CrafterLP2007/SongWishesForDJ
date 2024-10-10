@@ -1,49 +1,71 @@
-FROM php:8.1-fpm
+FROM php:8.1-fpm-alpine
 
 # Install Dockerize
-ENV DOCKERIZE_VERSION 0.6.1
+ARG DOCKERIZE_VERSION=0.6.1
 
-RUN curl -s -f -L -o /tmp/dockerize.tar.gz https://github.com/jwilder/dockerize/releases/download/v$DOCKERIZE_VERSION/dockerize-linux-amd64-v$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf /tmp/dockerize.tar.gz \
-    && rm /tmp/dockerize.tar.gz
+# Use the build argument to dynamically determine the architecture
+RUN set -eux; \
+    ARCH=$(uname -m); \
+    if [ "$ARCH" = "x86_64" ]; then ARCH="amd64"; fi; \
+    if [ "$ARCH" = "aarch64" ]; then ARCH="arm64"; fi; \
+    wget https://github.com/jwilder/dockerize/releases/download/v$DOCKERIZE_VERSION/dockerize-alpine-linux-$ARCH-v$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-$ARCH-v$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-$ARCH-v$DOCKERIZE_VERSION.tar.gz
 
-# Install Composer
-ENV COMPOSER_VERSION 2.7.1
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=$COMPOSER_VERSION
+# Install packages
+RUN apk --no-cache add \
+    php \
+    php-fpm \
+    php-opcache \
+    php-pdo_mysql \
+    php-pdo_pgsql \
+    php-pgsql \
+    php-pcntl \
+    php-exif \
+    php-intl \
+    php-openssl \
+    php-pecl-apcu \
+    php-pecl-redis \
+    php-common \
+    php-iconv \
+    php-json \
+    php-mbstring \
+    php-xml \
+    php-bcmath \
+    php-curl \
+    php-ctype \
+    php-dom \
+    php-tokenizer \
+    php-fileinfo \
+    php-xmlwriter \
+    php-xmlreader \
+    php-simplexml \
+    php-gd \
+    php-zip \
+    libzip-dev \
+    libpng-dev libjpeg-turbo-dev freetype-dev \
+    composer \
+    nodejs \
+    npm \
+    nginx
 
-# Install nodejs
-RUN curl -fsSL https://deb.nodesource.com/setup_21.x | bash - &&\
-apt-get install -y nodejs
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
-# Install Dependencies
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        libz-dev \
-        libpq-dev \
-        libjpeg-dev \
-        libpng-dev \
-        libssl-dev \
-        libzip-dev \
-        unzip \
-        zip \
-        libicu-dev \
-    && apt-get clean \
-    && docker-php-ext-configure gd \
-    && docker-php-ext-configure zip \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install \
-        gd \
-        exif \
-        opcache \
-        pdo_mysql \
-        pdo_pgsql \
-        pgsql \
-        pcntl \
-        zip \
-        intl \
-    && rm -rf /var/lib/apt/lists/*;
+RUN docker-php-ext-install gd pdo_mysql zip
 
+COPY . /usr/src/app
 WORKDIR /usr/src/app
 
+COPY .env.example ./usr/src/app/.env
+
+RUN composer install --no-dev --optimize-autoloader
+RUN npm install
+RUN npm run build
+
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+
 RUN chown -R www-data:www-data .
+RUN chmod -R 755 storage/* bootstrap/cache
+
+CMD ["sh", "-c", "php-fpm -D; nginx -g 'daemon off;'"]

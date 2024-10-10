@@ -15,22 +15,5 @@ services:
         volumes:
             - ./:/var/www
             - ./storage:/var/www/storage
-        networks:
-            - songwishesfordj
-
-    nginx:
-        image: nginx:stable-alpine
-        container_name: songwishesfordj_nginx
-        restart: unless-stopped
-        tty: true
         ports:
-            - '8000:80'
-        volumes:
-            - ./:/var/www
-            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
-        networks:
-            - songwishesfordj
-
-networks:
-    songwishesfordj:
-        driver: bridge
+            -  "8000:80"
