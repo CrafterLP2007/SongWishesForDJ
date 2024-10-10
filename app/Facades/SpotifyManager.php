@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static string generateAuthLink()
  * @method static bool isAlreadyInPlaylist(string $trackUri, int $offset = 0)
  * @method static bool getIsMaxTracksExceeded()
+ * @method static void refreshToken()
  */
 class SpotifyManager extends Facade
 {

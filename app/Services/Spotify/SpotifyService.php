@@ -2,15 +2,13 @@
 
 namespace App\Services\Spotify;
 
-use Aerni\Spotify\Exceptions\SpotifyApiException;
-use Aerni\Spotify\Exceptions\ValidatorException;
-use Aerni\Spotify\Facades\SpotifyFacade;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use SpotifyWebAPI\Session;
 use SpotifyWebAPI\SpotifyWebAPI;
+use SpotifyWebAPI\SpotifyWebAPIAuthException;
 use SpotifyWebAPI\SpotifyWebAPIException;
 
 class SpotifyService
@@ -44,11 +42,10 @@ class SpotifyService
      */
     public function searchTracks(string $searchTerm): array
     {
-        try {
-            return SpotifyFacade::searchTracks($searchTerm)->limit(12)->get()['tracks']['items'];
-        } catch (SpotifyApiException | ValidatorException $e) {
-            throw new Exception($e);
-        }
+        $api = new SpotifyWebAPI();
+        $api->setAccessToken($this->getAccessToken());
+
+        return json_decode(json_encode($api->search($searchTerm, ['track'], ['limit' => 12])->tracks->items), true);
     }
 
     /**
@@ -56,12 +53,13 @@ class SpotifyService
      *
      * @return string
      */
-    public function getAccessToken(): string
+    private function getAccessToken(): string
     {
         $accessToken = Cache::get('spotify.auth.access_token');
         $refreshToken = Cache::get('spotify.auth.refresh_token');
 
         if (!$accessToken || $this->isTokenExpired($accessToken)) {
+
             $this->session->refreshAccessToken($refreshToken);
 
             $accessToken = $this->session->getAccessToken();
@@ -86,7 +84,7 @@ class SpotifyService
             $api->me();
 
             return false;
-        } catch (SpotifyWebAPIException $e) {
+        } catch (SpotifyWebAPIException) {
             return true;
         }
     }
@@ -99,10 +97,7 @@ class SpotifyService
     public function addTrackToPlaylist(string $trackUri): void
     {
         $api = new SpotifyWebAPI();
-
-        $accessToken = $this->getAccessToken();
-
-        $api->setAccessToken($accessToken);
+        $api->setAccessToken($this->getAccessToken());
 
         if ($this->isAlreadyInPlaylist($trackUri)) {
             return;
@@ -178,15 +173,14 @@ class SpotifyService
      */
     public function getAmountOfTracksInPlaylist(): int
     {
-        $size = 0;
-        foreach (SpotifyFacade::playlist($this->playlistId)->fields('tracks')->get() as $playlist) {
-            foreach ($playlist['items'] as $item) {
-                unset($item);
-                $size++;
-            }
-        }
+        $api = new SpotifyWebAPI();
+        $api->setAccessToken($this->getAccessToken());
 
-        return $size;
+        $total = $api->getPlaylistTracks($this->playlistId, [
+            'fields' => 'total'
+        ]);
+
+        return $total->total;
     }
 
     /**
@@ -206,5 +200,33 @@ class SpotifyService
         Cache::put('spotify.auth.refresh_token', $refreshToken, 3600);
 
         return redirect()->to(route('home'));
+    }
+
+    /**
+     * Refresh the access token.
+     *
+     * @return void
+     */
+    public function refreshToken(): void
+    {
+        $this->getAccessToken();
+    }
+
+    /**
+     * Check if the user is connected to Spotify.
+     *
+     * @return bool
+     */
+    public function isConnected(): bool
+    {
+        try {
+            $api = new SpotifyWebAPI();
+            $api->setAccessToken($this->getAccessToken());
+            $api->me();
+        } catch (SpotifyWebAPIAuthException) {
+            return false;
+        }
+
+        return true;
     }
 }
