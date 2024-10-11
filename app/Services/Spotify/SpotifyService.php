@@ -21,12 +21,12 @@ class SpotifyService
      */
     public function __construct()
     {
-        $this->playlistId = config('spotify.playlists.id');
+        $this->playlistId = config('swf.playlists.id');
 
         $this->session = new Session(
-            config('spotify.auth.client_id'),
-            config('spotify.auth.client_secret'),
-            config('spotify.callback.redirect_uri')
+            config('swf.spotify.client_id'),
+            config('swf.spotify.client_secret'),
+            config('swf.callback.redirect_uri')
         );
     }
 
@@ -52,8 +52,8 @@ class SpotifyService
      */
     private function getAccessToken(): string
     {
-        $accessToken = Cache::get('spotify.auth.access_token');
-        $refreshToken = Cache::get('spotify.auth.refresh_token');
+        $accessToken = Cache::get('swf.spotify.access_token');
+        $refreshToken = Cache::get('swf.spotify.refresh_token');
 
         if (!$accessToken || $this->isTokenExpired($accessToken)) {
 
@@ -61,7 +61,7 @@ class SpotifyService
 
             $accessToken = $this->session->getAccessToken();
 
-            Cache::put('spotify.auth.access_token', $accessToken, 3600);
+            Cache::put('swf.spotify.access_token', $accessToken, 3600);
         }
 
         return $accessToken;
@@ -143,7 +143,7 @@ class SpotifyService
      */
     public function getIsMaxTracksExceeded(): bool
     {
-        return $this->getAmountOfTracksInPlaylist() >= config('spotify.playlists.max_tracks');
+        return $this->getAmountOfTracksInPlaylist() >= config('swf.playlists.max_tracks');
     }
 
     /**
@@ -193,8 +193,8 @@ class SpotifyService
         $accessToken = $this->session->getAccessToken();
         $refreshToken = $this->session->getRefreshToken();
 
-        Cache::put('spotify.auth.access_token', $accessToken, 3600);
-        Cache::put('spotify.auth.refresh_token', $refreshToken, 3600);
+        Cache::put('swf.spotify.access_token', $accessToken, 3600);
+        Cache::put('swf.spotify.refresh_token', $refreshToken, 3600);
 
         return redirect()->to(route('home'));
     }

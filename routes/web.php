@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => 'language'], function () {
+Route::group(['middleware' => ['language', 'internal_auth']], function () {
     Route::get('/', Home::class)->name("home");
 
     Route::get("/callback", [SpotifyService::class, 'handleSpotifyCallback'])->name('callback');
