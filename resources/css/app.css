@@ -63,4 +63,3 @@ audio::-webkit-media-controls-play-button:hover {
     background-color: oklch(var(--n));
     border-radius: 50%;
 }
-

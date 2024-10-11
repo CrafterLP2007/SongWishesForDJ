@@ -15,7 +15,6 @@ class SpotifyService
 {
     public string $playlistId;
     private Session $session;
-    private SpotifyWebAPI $api;
 
     /**
      * SpotifyService constructor.
@@ -29,8 +28,6 @@ class SpotifyService
             config('spotify.auth.client_secret'),
             config('spotify.callback.redirect_uri')
         );
-
-        $this->api = new SpotifyWebAPI();
     }
 
     /**

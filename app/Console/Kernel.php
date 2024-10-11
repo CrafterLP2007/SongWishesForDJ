@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
             SpotifyManager::refreshToken();
-        })->everyTenMinutes();
+        });
     }
 
     /**

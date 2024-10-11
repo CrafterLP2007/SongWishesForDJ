@@ -1,11 +1,11 @@
 <div class="sticky top-0 z-50">
-    <div class="navbar bg-base-300">
+    <div class="navbar bg-base-300 border-b border-neutral sticky top-0 z-50 backdrop-filter backdrop-blur-xl bg-opacity-30">
         <div class="navbar-start">
             <img src="{{ asset('img/Logo.svg') }}" class="w-12 h-12" alt="Logo">
             <a class="sm:visible invisible btn btn-ghost text-xl">{{ config('app.name') }}</a>
         </div>
-        <div class="sm:navbar-end flex md:mr-12 mr-0">
-            <div class="flex items-center space-x-1">
+        <div class="navbar-end">
+            <div class="flex items-center gap-1 mr-2">
                 <i class="icon-disc-3"></i>
                 @php
                     $trackCount = cache()->remember('playlist_track_count', now()->addMinutes(5), function () {
@@ -13,7 +13,8 @@
                     });
                 @endphp
 
-                <p>{!! __('pages/navbar.playlist_track_count', ['count' => $trackCount]) !!}</p>
+                <p class="lg:block hidden">{!! __('pages/navbar.playlist_track_count', ['count' => $trackCount]) !!}</p>
+                <p class="lg:hidden block font-bold">{{ $trackCount }}</p>
             </div>
         </div>
     </div>
