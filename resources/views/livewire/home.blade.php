@@ -8,11 +8,45 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
-                    <span wire:poll.1s="setRateLimit">{!! __('pages/home.rate_limit', ['seconds' => $rateLimitTime]) !!}</span>
+                    <span
+                        wire:poll.1s="setRateLimit">{!! __('pages/home.rate_limit', ['seconds' => $rateLimitTime]) !!}</span>
                 </div>
             </div>
         </div>
     @endif
+
+    <div class="flex items-center justify-center" wire:poll.10s="updateCurrentTrack">
+        @if(isset($currentTrack['item']))
+            <div class="min-h-12 h-auto min-w-1/3 lg:w-auto w-full bg-base-200 rounded-full opacity-75 shadow-sm flex items-center justify-start">
+                <div class="flex mx-8 items-center justify-between gap-4 w-full">
+                    <div class="flex flex-row gap-4">
+                        <div class="icon">
+                            <div class="icon-bar"></div>
+                            <div class="icon-bar"></div>
+                            <div class="icon-bar"></div>
+                        </div>
+                        <h1 class="text-white font-semibold">{{ $currentTrack['item']['name'] }}
+                            <span>- {{ $currentTrack['item']['artists'][0]['name'] }}</span></h1>
+                    </div>
+                    <div class="ml-auto">
+                        @if($currentTrack['active_device_type'] !== null)
+                            @switch($currentTrack['active_device_type'])
+                                @case('Computer')
+                                    <i class="icon-monitor"></i>
+                                    @break
+                                @case('Smartphone')
+                                    <i class="icon-smartphone"></i>
+                                    @break
+                                @case("speaker")
+                                    <i class="icon-speaker"></i>
+                                @break
+                            @endswitch
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
 
     <div class="mt-12 flex justify-center items-center">
         <i class="icon-disc-3 disc-animation xl:text-9xl text-5xl text-center"></i>
@@ -53,7 +87,8 @@
                         @endforeach
                     </div>
                 </div>
-                <x-button wire:click="addSong('{{ $song['uri']}}')" class="btn btn-primary mt-4 mb-4 mx-4" spinner="addSong('{{ $song['uri']}}')">
+                <x-button wire:click="addSong('{{ $song['uri']}}')" class="btn btn-primary mt-4 mb-4 mx-4"
+                          spinner="addSong('{{ $song['uri']}}')">
                     <i class="icon-plus"></i>
                     {!! __('pages/home.cards.add_button_label') !!}
                 </x-button>

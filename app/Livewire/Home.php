@@ -2,9 +2,7 @@
 
 namespace App\Livewire;
 
-use Aerni\Spotify\Facades\SpotifyFacade;
 use App\Facades\SpotifyManager;
-use App\Jobs\AddSong;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Exception;
@@ -18,6 +16,8 @@ class Home extends Component
     public $searchTerm = "";
     public $songs = [];
     public $rateLimitTime;
+    public $currentTrack;
+    public bool $showActiveTrack = false;
 
     public function addSong($trackUri): void
     {
@@ -79,6 +79,20 @@ class Home extends Component
         }
 
         return false;
+    }
+
+    public function updateCurrentTrack(): void
+    {
+        $this->currentTrack = SpotifyManager::getCurrentTrack();
+    }
+
+    public function mount(): void
+    {
+        $this->showActiveTrack = config('swf.show_active_track');
+
+        if ($this->showActiveTrack) {
+            $this->updateCurrentTrack();
+        }
     }
 
     public function render()

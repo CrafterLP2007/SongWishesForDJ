@@ -2,7 +2,7 @@
     <div class="navbar bg-base-300 border-b border-neutral sticky top-0 z-50 backdrop-filter backdrop-blur-xl bg-opacity-30">
         <div class="navbar-start">
             <img src="{{ asset('img/Logo.svg') }}" class="w-12 h-12" alt="Logo">
-            <a class="sm:visible invisible btn btn-ghost text-xl">{{ config('app.name') }}</a>
+            <a href="{{ route('home') }}" class="sm:visible invisible btn btn-ghost text-xl">{{ config('app.name') }}</a>
         </div>
         <div class="navbar-end">
             <div class="flex items-center gap-1 mr-2">

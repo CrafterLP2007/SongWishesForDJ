@@ -54,5 +54,16 @@ return [
     'auth' => [
         'enabled' => env('SWF_AUTHENTICATION_ENABLED', false),
         'secret' => env('SWF_AUTHENTICATION_SECRET'),
-    ]
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Show Active Track
+    |--------------------------------------------------------------------------
+    |
+    | Here you can enable or disable the active track feature.
+    | This will show the currently playing track on the website based on Spotify.
+    |
+    */
+    'show_active_track' => env('SWF_SHOW_ACTIVE_TRACK', true),
 ];

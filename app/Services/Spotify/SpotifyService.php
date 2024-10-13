@@ -153,13 +153,19 @@ class SpotifyService
      */
     public function generateAuthLink(): string
     {
+        $scopes = [
+            'playlist-modify-public',
+            'playlist-modify-private',
+            'playlist-read-private',
+            'playlist-read-collaborative',
+        ];
+
+        if (config('swf.show_active_track')) {
+            $scopes[] = 'user-read-playback-state';
+        }
+
         return $this->session->getAuthorizeUrl([
-            'scope' => [
-                'playlist-modify-public',
-                'playlist-modify-private',
-                'playlist-read-private',
-                'playlist-read-collaborative',
-            ],
+            'scope' => $scopes,
         ]);
     }
 
@@ -225,5 +231,31 @@ class SpotifyService
         }
 
         return true;
+    }
+
+    /**
+     * Get the current track from Spotify.
+     *
+     * @return array
+     */
+    public function getCurrentTrack(): array
+    {
+        $api = new SpotifyWebAPI();
+        $api->setAccessToken($this->getAccessToken());
+
+        $devices = $api->getMyDevices()->devices;
+        $activeDeviceType = null;
+
+        foreach ($devices as $device) {
+            if ($device->is_active) {
+                $activeDeviceType = $device->type;
+                break;
+            }
+        }
+
+        $currentTrack = json_decode(json_encode($api->getMyCurrentTrack()), true);
+        $currentTrack['active_device_type'] = $activeDeviceType;
+
+        return $currentTrack;
     }
 }
