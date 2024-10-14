@@ -23,7 +23,7 @@
 
 .linear-wipe {
     text-align: center;
-    background: linear-gradient(to right, #FFF 20%, #FF0 40%, #FF0 60%, #FFF 80%);
+    background: linear-gradient(to right, #FF0000 0%, #FFFF00 17%, #00FF00 33%, #00FFFF 50%, #0000FF 67%, #FF00FF 83%, #FF0000 100%);
     background-size: 200% auto;
     color: #000;
     background-clip: text;
@@ -31,7 +31,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     -webkit-animation: shine 1s linear infinite;
-    animation: shine 1s linear infinite;
+    animation: shine 2s linear infinite;
 }
 @-webkit-keyframes shine {
     to {

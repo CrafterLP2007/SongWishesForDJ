@@ -15,11 +15,11 @@
         </div>
     @endif
 
-    <div class="flex items-center justify-center" wire:poll.10s="updateCurrentTrack">
+    <div class="flex items-center justify-center sticky top-20 z-10" wire:poll.10s="updateCurrentTrack">
         @if(isset($currentTrack['item']))
-            <div class="min-h-12 h-auto min-w-1/3 lg:w-auto w-full bg-base-200 rounded-full opacity-75 shadow-sm flex items-center justify-start">
+            <div class="min-h-12 h-auto min-w-1/3 lg:w-auto w-full bg-base-200 rounded-full backdrop-filter backdrop-blur-xl bg-opacity-30 shadow-sm flex items-center justify-start border border-neutral">
                 <div class="flex mx-8 items-center justify-between gap-4 w-full">
-                    <div class="flex flex-row gap-4">
+                    <div class="flex items-center flex-row gap-4">
                         <div class="icon">
                             <div class="icon-bar"></div>
                             <div class="icon-bar"></div>
