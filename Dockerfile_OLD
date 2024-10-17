@@ -54,7 +54,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
 RUN docker-php-ext-install gd pdo_mysql zip
 
-COPY . /usr/src/app
+COPY docker /usr/src/app
 WORKDIR /usr/src/app
 
 COPY .env.example ./usr/src/app/.env
