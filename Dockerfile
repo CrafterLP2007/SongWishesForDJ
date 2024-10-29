@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine
+FROM php:8.2-fpm-alpine
 
 # Install Dockerize
 ARG DOCKERIZE_VERSION=0.8.0
@@ -59,7 +59,7 @@ WORKDIR /usr/src/app
 
 RUN cp .env.example .env
 
-RUN composer update --no-dev --no-interaction
+RUN composer install --no-dev --no-interaction
 RUN npm install
 RUN npm run build
 

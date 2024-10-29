@@ -52,7 +52,15 @@ class Home extends Component
                 ->send();
         }
 
-        $this->redirect(route('home'), true);
+        $authEnabled = config('swf.auth.enabled');
+        $secret = config('swf.auth.secret');
+
+        $url = route('home');
+        if ($authEnabled) {
+            $url .= '?secret=' . $secret;
+        }
+
+        $this->redirect($url, true);
     }
 
     public function search(): void

@@ -212,7 +212,17 @@ class SpotifyService
      */
     public function refreshToken(): void
     {
-        $this->getAccessToken();
+        $accessToken = Cache::get('swf.spotify.access_token');
+        $refreshToken = Cache::get('swf.spotify.refresh_token');
+
+        if (!$accessToken || $this->isTokenExpired($accessToken)) {
+            $this->session->refreshAccessToken($refreshToken);
+            $accessToken = $this->session->getAccessToken();
+            $refreshToken = $this->session->getRefreshToken();
+
+            Cache::put('swf.spotify.access_token', $accessToken, 3600);
+            Cache::put('swf.spotify.refresh_token', $refreshToken, 3600);
+        }
     }
 
     /**
